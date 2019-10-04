@@ -75,3 +75,12 @@ foreign key (CD_id) references CD(CD_id),
 foreign key (artist_id) references artist(artist_id)
 );
 go
+if SUSER_ID('diskUserIW') is null
+create login diskUserIW with password = 'MSPress#1',
+	default_database = disk_inventoryIW;
+go
+if user_id('diskUserIW') is null
+	create user diskUserIW;
+go
+alter role db_datareader add member diskUserIW;
+go
