@@ -1,0 +1,1 @@
+select * from disk_has_borrower where returned_date is null
