@@ -1,7 +1,12 @@
 --Project 4
 --10/10/2019
 --Ian Williams
------------------------------------------------------
+----------------------------------------------------
+--Modification Log
+--10/22/2019
+--Structure Changes:
+--Added Project 5 code to the document
+----------------------------------------------------
 -- Modification Log
 --10/18/2019
 --Structure changes:
@@ -338,4 +343,158 @@ on CD.CD_id = disk_has_borrower.CD_id
 join current_borrower
 on current_borrower.borrower_id = disk_has_borrower.borrower_id
 where returned_date is null
+--Project 5 Code---------------------------------------------------------
+
+--insert artist proc
+drop proc if exists sp_InsArtist;-- Drops process to allow for multiple runthroughs
+go
+create proc sp_InsArtist --creates process
+	@artist_id int,
+	@fname varchar(100),
+	@artist_type_id int,
+	@lname varchar(100) = null
+as
+begin try
+	insert into [dbo].[artist]
+	([artist_id],
+	[artist_fname],
+	[artist_lname],
+	[artist_type])
+	values
+	(@artist_id,
+	@fname,
+	@lname,
+	@artist_type_id)
+end try
+begin catch
+print 'an error has occured. while calling insert artist';
+print 'error #: ' + convert(varchar(200), error_number()); 
+print 'error msg: ' +convert(varchar(200), error_message()); 
+end catch
+go
+exec sp_InsArtist 27, 'epicLloyd', 0
+go
+
+--update artist proc
+drop proc if exists sp_UpdArtist;-- Drops process to allow for multiple runthroughs
+go
+create proc sp_UpdArtist--creates process
+	@artist_id int,
+	@fname varchar(100),
+	@artist_type_id int,
+	@lname varchar(100) = null
+as
+begin try
+	update [dbo].[artist]
+	set [artist_fname] = @fname, 
+		[artist_lname] = @lname,
+		[artist_type] = @artist_type_id
+	where @artist_id = artist_id
+end try
+begin catch
+print 'an error has occured. while calling update artist';
+print 'error #: ' + convert(varchar(200), error_number()); 
+print 'error msg: ' +convert(varchar(200), error_message()); 
+end catch
+go
+exec sp_UpdArtist 27, 'Bruno', 1, 'mars'
+go
+
+--delete artist proc
+drop proc if exists sp_DelArtist-- Drops process to allow for multiple runthroughs
+go
+create proc sp_DelArtist --creates process
+	@artist_id int
+as
+begin try
+	delete from [dbo].[artist]
+	where @artist_id = artist_id
+end try
+begin catch
+print 'an error has occured. while calling delete artist';
+print 'error #: ' + convert(varchar(200), error_number()); 
+print 'error msg: ' +convert(varchar(200), error_message()); 
+end catch
+go
+
+exec sp_DelArtist 27
+
+
+--------------------------------
+
+--insert borrower proc
+drop proc if exists sp_InsBorrower; -- Drops process to allow for multiple runthroughs
+go
+create proc sp_InsBorrower --creates process
+	@borrower_id int,
+	@fname varchar(100),
+	@borrower_phone int,
+	@lname varchar(100)
+as
+begin try
+	insert into [dbo].[current_borrower]
+	([borrower_id],
+	[borrower_fname],
+	[borrower_lname],
+	[borrower_phone_number])
+	values
+	(@borrower_id,
+	@fname,
+	@lname,
+	@borrower_phone)
+end try
+begin catch
+print 'an error has occured. while calling insert borrower';
+print 'error #: ' + convert(varchar(200), error_number()); 
+print 'error msg: ' +convert(varchar(200), error_message()); 
+end catch
+go
+exec sp_InsBorrower 27, 'epicLloyd', 2088888888, 'nicePeter'
+go
+
+--update borrower proc
+drop proc if exists sp_UpdBorrower;-- Drops process to allow for multiple runthroughs
+go
+create proc sp_UpdBorrower --creates process
+	@borrower_id int,
+	@fname varchar(100),
+	@borrower_phone int,
+	@lname varchar(100)
+as
+begin try
+	update [dbo].[current_borrower]
+	set [borrower_fname] = @fname, 
+		[borrower_lname] = @lname,
+		[borrower_phone_number] = @borrower_phone
+	where @borrower_id = borrower_id
+end try
+begin catch
+print 'an error has occured. while calling update borrower';
+print 'error #: ' + convert(varchar(200), error_number()); 
+print 'error msg: ' +convert(varchar(200), error_message()); 
+end catch
+go
+exec sp_UpdBorrower 27, 'Lloyd', 1, 'Peter'
+go
+
+--delete borrower proc
+drop proc if exists sp_DelBorrower-- Drops process to allow for multiple runthroughs
+go
+create proc sp_DelBorrower --creates process
+	@borrower_id int
+as
+begin try
+	delete from [dbo].[current_borrower]
+	where @borrower_id = borrower_id
+end try
+begin catch
+print 'an error has occured. while calling delete borrower';
+print 'error #: ' + convert(varchar(200), error_number()); 
+print 'error msg: ' +convert(varchar(200), error_message()); 
+end catch
+go
+
+exec sp_DelBorrower 27
+
+
 
