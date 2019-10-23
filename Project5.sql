@@ -1,27 +1,33 @@
---Project 4
---10/10/2019
+--Project 5
+--10/23/2019
 --Ian Williams
+----------------------------------------------------
+--Modification Log
+--10/23/2019
+--Structure Changes:
+--Added the last part of Project 5 code to the document.
+--Added more comments for added readability.
 ----------------------------------------------------
 --Modification Log
 --10/22/2019
 --Structure Changes:
---Added Project 5 code to the document
+--Added the first 2 parts of the Project 5 code to the document.
 ----------------------------------------------------
 -- Modification Log
 --10/18/2019
 --Structure changes:
---Added Project 4 code to the document
+--Added Project 4 code to the document.
 ----------------------------------------------------
 --10/18/2019
 --Structure changes:
---added more returned dates and diversified borrower data to allow for more accurate testing
+--added more returned dates and diversified borrower data to allow for more accurate testing.
 -----------------------------------------------------
 --10/17/2019 - 2
 --Structure changes: 
 --changed a few single artists into band names in the artist table,
---cahnged artist_has_cd to accomodate, removed filler data from artist_has_cd as well(replaced with actual data)
---I changed the values directly, but here is some sql that would do the same thing
---WARNING: The changes have been in the create code, so these statements will not affect any rows, it is purley for refrence
+--cahnged artist_has_cd to accomodate, removed filler data from artist_has_cd as well(replaced with actual data).
+--I changed the values directly, but here is some sql that would do the same thing.
+--WARNING: The changes have been in the create code, so these statements will not affect any rows, it is purley for refrence.
 --code for artist table:
 --update artist set artist_lname = null where artist_fname = 'paul' or 'brian' or 'matt' or 'freddie'
 --update artist set artist_fname = beatles where artist_fname = 'paul'
@@ -29,7 +35,7 @@
 --update artist set artist_fname = Cage the Elephant where artist_fname = 'matt'
 --update artist set artist_fname = queen where artist_fname = 'freddie'
 --explanation for artist_has_cd:
---I removed the filler data an replaced it with more semantic date(artists and songs)
+--I removed the filler data an replaced it with more semantic date(artists and songs).
 --this was done by hand, no update or insert statements.
 -----------------------------------------------------
 --10/17/2019 - 1 - Initial creation of file, 
@@ -345,6 +351,8 @@ on current_borrower.borrower_id = disk_has_borrower.borrower_id
 where returned_date is null
 --Project 5 Code---------------------------------------------------------
 
+-- Artist Table
+
 --insert artist proc
 drop proc if exists sp_InsArtist;-- Drops process to allow for multiple runthroughs
 go
@@ -372,7 +380,7 @@ print 'error #: ' + convert(varchar(200), error_number());
 print 'error msg: ' +convert(varchar(200), error_message()); 
 end catch
 go
-exec sp_InsArtist 27, 'epicLloyd', 0
+exec sp_InsArtist 27, 'epicLloyd', 0 --execute the process
 go
 
 --update artist proc
@@ -397,7 +405,7 @@ print 'error #: ' + convert(varchar(200), error_number());
 print 'error msg: ' +convert(varchar(200), error_message()); 
 end catch
 go
-exec sp_UpdArtist 27, 'Bruno', 1, 'mars'
+exec sp_UpdArtist 27, 'Bruno', 1, 'mars'--execute the process
 go
 
 --delete artist proc
@@ -417,10 +425,9 @@ print 'error msg: ' +convert(varchar(200), error_message());
 end catch
 go
 
-exec sp_DelArtist 27
+exec sp_DelArtist 27 --execute the process
 
-
---------------------------------
+--Borrower Table
 
 --insert borrower proc
 drop proc if exists sp_InsBorrower; -- Drops process to allow for multiple runthroughs
@@ -449,7 +456,7 @@ print 'error #: ' + convert(varchar(200), error_number());
 print 'error msg: ' +convert(varchar(200), error_message()); 
 end catch
 go
-exec sp_InsBorrower 27, 'epicLloyd', 2088888888, 'nicePeter'
+exec sp_InsBorrower 27, 'epicLloyd', 2088888888, 'nicePeter' --execute the process
 go
 
 --update borrower proc
@@ -474,7 +481,7 @@ print 'error #: ' + convert(varchar(200), error_number());
 print 'error msg: ' +convert(varchar(200), error_message()); 
 end catch
 go
-exec sp_UpdBorrower 27, 'Lloyd', 1, 'Peter'
+exec sp_UpdBorrower 27, 'Lloyd', 1, 'Peter' --execute the process
 go
 
 --delete borrower proc
@@ -494,7 +501,85 @@ print 'error msg: ' +convert(varchar(200), error_message());
 end catch
 go
 
-exec sp_DelBorrower 27
+exec sp_DelBorrower 27 --execute the process
 
+--CD Table
+
+--insert CD proc
+drop proc if exists sp_InsCD; -- Drops process to allow for multiple runthroughs
+go
+create proc sp_InsCD --creates process
+	@CD_id int,
+	@CD_name varchar(100),
+	@CD_status int,
+	@CD_genre int,
+	@CD_type int
+as
+begin try
+	insert into [dbo].[CD]
+	([CD_id],
+	[CD_name],
+	[status_id],
+	[genre_id],
+	[type_id])
+	values
+	(@CD_id,
+	@CD_name,
+	@CD_status,
+	@CD_genre,
+	@CD_type)
+end try
+begin catch
+print 'an error has occured. while calling insert CD';
+print 'error #: ' + convert(varchar(200), error_number()); 
+print 'error msg: ' +convert(varchar(200), error_message()); 
+end catch
+go
+exec sp_InsCD 27, 'ERB', 0, 1, 0 --execute the process
+go
+---update CD proc
+drop proc if exists sp_UpdCD;-- Drops process to allow for multiple runthroughs
+go
+create proc sp_UpdCD --creates process
+	@CD_id int,
+	@CD_name varchar(100),
+	@CD_status int,
+	@CD_genre int,
+	@CD_type int
+as
+begin try
+	update [dbo].[CD]
+	set [CD_name] = @CD_name, 
+		[status_id] = @CD_status,
+		[genre_id] = @CD_genre,
+		[type_id] = @CD_type
+	where @CD_id = CD_id
+end try
+begin catch
+print 'an error has occured. while calling update CD';
+print 'error #: ' + convert(varchar(200), error_number()); 
+print 'error msg: ' +convert(varchar(200), error_message()); 
+end catch
+go
+exec sp_UpdCD 27, 'ERB2', 1, 1,0 --execute the process
+go
+--delete CD proc
+drop proc if exists sp_DelCD-- Drops process to allow for multiple runthroughs
+go
+create proc sp_DelCD --creates process
+	@CD_id int
+as
+begin try
+	delete from [dbo].[CD]
+	where @CD_id = [CD_id]
+end try
+begin catch
+print 'an error has occured. while calling delete CD';
+print 'error #: ' + convert(varchar(200), error_number()); 
+print 'error msg: ' +convert(varchar(200), error_message()); 
+end catch
+go
+
+exec sp_DelCD 27 --execute the process
 
 
